@@ -1,65 +1,121 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
-export default function Home() {
+type NewsItem = {
+  id: number;
+  title: string;
+  body: string;
+};
+
+export default function Page() {
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [dark, setDark] = useState(false);
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/posts")
+      .then((res) => res.json())
+      .then((data) => setNews(data.slice(0, 5)));
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: dark
+          ? "linear-gradient(135deg, #020617, #0f172a)"
+          : "linear-gradient(135deg, #eef2f3, #d9e4f5)",
+      }}
+    >
+      {/* NAVBAR */}
+      <header
+        style={{
+          background: dark ? "#020617" : "#0f172a",
+          color: "#fff",
+          padding: "14px 24px",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1000px",
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <strong>SSR News</strong>
+          <button
+            onClick={() => setDark(!dark)}
+            style={{
+              padding: "6px 14px",
+              borderRadius: "20px",
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            {dark ? "☀ Light" : "🌙 Dark"}
+          </button>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      </header>
+
+      {/* MAIN */}
+      <main
+        style={{
+          maxWidth: "1000px",
+          margin: "30px auto",
+          padding: "20px",
+          background: dark ? "#020617" : "#ffffff",
+          color: dark ? "#e5e7eb" : "#020617",
+          borderRadius: "16px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
+        }}
+      >
+        <Image
+          src="/hero.jpeg"
+          alt="Hero"
+          width={1000}
+          height={450}
+          priority
+          style={{ width: "100%", height: "auto", borderRadius: "14px" }}
+        />
+
+        <h1 style={{ margin: "20px 0" }}>📰 SSR News Dashboard</h1>
+
+        {news.map((item) => (
+          <div
+            key={item.id}
+            style={{
+              marginBottom: "16px",
+              padding: "16px",
+              borderRadius: "12px",
+              background: dark ? "#020617" : "#f7f9fc",
+              border: dark ? "1px solid #1e293b" : "none",
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <h3>{item.title}</h3>
+            <p style={{ opacity: 0.85 }}>{item.body}</p>
+          </div>
+        ))}
+
+        <h2 style={{ marginTop: "40px" }}>📸 Image Gallery</h2>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "16px",
+          }}
+        >
+          <Image src="/img1.jpeg" alt="img1" width={300} height={350} />
+          <Image src="/img2.jpeg" alt="img2" width={300} height={350} />
+          <Image src="/img3.jpeg" alt="img3" width={300} height={350} />
         </div>
       </main>
+
+      <footer style={{ textAlign: "center", padding: "16px", opacity: 0.7 }}>
+        © 2026 • CDN + SSR + Caching Optimized
+      </footer>
     </div>
   );
 }
