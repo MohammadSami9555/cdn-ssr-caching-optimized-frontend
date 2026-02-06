@@ -94,6 +94,7 @@ http://localhost:3000
 
 📁 Folder Structure
 
+```text
 cdn-ssr-caching-optimized-frontend/
 ├─ app/
 │  ├─ favicon.ico
